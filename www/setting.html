@@ -2,8 +2,8 @@
 <html>
     <head>
         <title>Server info</title>
-        
-        
+
+
         <!-- Include otp from background -->
         <!--<iframe src="otp_bk.html"></iframe>-->
         <!-- / End include-->
@@ -14,37 +14,37 @@
                     <script src="assets/js/jquery.mobile-1.4.5.min.js"></script>
                     <script src="assets/js/minehome_custom.js"></script>
                     <script type="text/javascript" src="cordova.js"></script>
-                    
-                    
-                    
-                    
-                    
+
+
+
+
+
                     <script type="text/javascript">
                         var db;
-                        
+
                         $(document).ready(function(){
-                                          
-                                          
+
+
                                           //Open Database Connection
                                           document.addEventListener("deviceready",onDeviceReady,false);
                                           function onDeviceReady(){
                                           //myDB = sqlitePlugin.openDatabase({name: "mySQLite.db"});
-                                          
+
                                           db = sqlitePlugin.openDatabase({name:'notify.sqlite',location:0});
                                           // alert(db);
                                           }
                                           });
-                                          
+
                                           // set value form onload
                                           window.onload = function() {
                                               // get value from local storage
                                               document.getElementById("uname").value = localStorage.getItem("uname_r");
                                               document.getElementById("serverurl").value = localStorage.getItem("serverurl_r");
                                               document.getElementById("serial").value = localStorage.getItem("gatewayse");
-                                              
-                                              
+
+
                                               //document.getElementById("pword").value = localStorage.getItem("pword_r");
-                                              
+
                                               ///document.getElementById("result").innerHTML = localStorage.getItem("otp");
                                               //Create SQLite
                                               //initDatabase();
@@ -53,16 +53,16 @@
                                                db.transaction(function(transaction){
                                                alert("test");
                                                },function(error){
-                                               
+
                                                alert("alert");
-                                               
+
                                                }*/
                                               //alert("ss");
                                           }
-                    
-                    
+
+
                         </script>
-                    
+
                     <script>
                         // Global declarations - assignments made in $(document).ready() below
                         var hdrMainvar = null;
@@ -89,14 +89,14 @@
                         var EMPTY = "";
                         var NO_STATE = "ZZ";
                         </script>
-                    
+
                     </head>
     <body>
-        
-        
+
+
         <!-- Page starts here -->
         <div data-role="page" id="page1">
-            
+
             <div  data-role="header" style="height:70px">
                 <a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-left" style="margin-top:20px">Home</a>
                 <br>
@@ -104,80 +104,77 @@
                 <a id="refr" href="#"
                     class="ui-btn ui-icon-refresh ui-btn-icon-right" style="margin-top:20px">Refresh</a>
             </div>
-            
-            
-            
-            
+
+
+
+
             <div id="result">
-                
+
             </div>
             <div role="main" class="ui-content">
-                
+
                 <form id="form1">
-                    
+
                     <div id="unameDiv" data-role="fieldcontain">
                         <label for="username_label">Username*</label>
                         <input id="uname" name="uname_r" type="text" autofocus required placeholder="Please input your username"/>
-                        
+
                     </div>
-                    
+
                     <div id="passeDiv" data-role="fieldcontain">
-                        
+
                         <label for="password_label">Password*</label>
                         <input id="pword" name="pword_r" type="password" required placeholder="Please input your password" />
-                        
+
                     </div>
                     <div id="serverurlDiv" data-role="fieldcontain">
-                        
+
                         <label for="Server_url"> Server URL*</label>
                         <input id="serverurl" name="serverurl_r" type="url" required placeholder="Please enter your Server URL"/>
                     </div>
                     <div id="serverurlDiv" data-role="fieldcontain">
-                        
+
                         <label for="OTP">Gate way Serial Number</label>
                         <input id="serial" name="serial" type="text" placeholder="Please enter your gateway serial number" />
-                        
+
                     </div>
-                    
+
                     <div id="submitDiv" data-role="fieldcontain">
                         <input type="submit" value="Submit" data-inline="true"/>
-                        
-                        
+
+
                     </div>
                 </form>
             </div><!-- contentMain -->
-            
-            
-            
+
+
+
             <div align="CENTER" data-role="content" id="contentDialog" name="contentDialog">
                 <div>Please fill in all required fields before submitting the form.</div>
                 <a id="buttonOK" name="buttonOK" href="#page1" data-role="button" data-inline="true">OK</a>
             </div>	<!-- contentDialog -->
-            
+
             <!-- contentTransition is displayed after the form is submitted until a response is received back. -->
             <div data-role="content" id="contentTransition" name="contentTransition">
                 <div align="CENTER"><h4>Your info has been saved.</h4></div>
                 <div align="CENTER"><!-- <img id="spin" name="spin" src="img/wait.gif"/>--></div>
             </div>	<!-- contentTransition -->
-            
+
             <!-- Although stored within page1 div tag, hdrConfirmation, contentConfirmation and ftrConfirmation represent a self contained 'confirmation page' -->
             <div data-role="header"  id="hdrConfirmation" name="hdrConfirmation" data-nobackbtn="true">
                 <h1>Server information saved</h1>
             </div>
-            
+
             <div data-role="content" id="contentConfirmation" name="contentConfirmation" align="center">
                 <p>Your info has been saved.</p>
                 <p><span id="confirmation" name="confirmation"></span>  </p>
             </div><!-- contentConfirmation -->
             <div id="result">
             </div>
-            <div  data-role="footer">
-                <h1></h1>
-            </div>
-            
-            
+
+
             <script>
-                
+
                 $(document).ready(function() {
                                   // Assign global variables
                                   hdrMainVar = $('#hdrMain');
@@ -200,38 +197,38 @@
                                   // alert(password_var);
                                   serverurl = $('#serverurl');
                                   serial =$('#serial');
-                                  
+
                                   hideContentDialog();
                                   hideContentTransition();
                                   hideConfirmation();
                                   });
-                                  
+
                                   $('#serial').click(function a(){
-                                                     
+
                                                      //alert("scan QR");
                                                      scan();
-                                                     
+
                                                      });
                                                      $('#buttonOK').click(function() {
                                                                           hideContentDialog();
                                                                           showMain();
                                                                           return false;
                                                                           });
-                                                                          
-                                                                          
+
+
                                                                           $('#form1').submit(function() {
                                                                                              var err = false;
-                                                                                             
+
                                                                                              // Hide the Main content
                                                                                              hideMain();
-                                                                                             
+
                                                                                              // Reset the previously highlighted form elements
                                                                                              stateLabelVar.removeClass(MISSING);
                                                                                              whatLabelVar.removeClass(MISSING);
                                                                                              inputMapVar.each(function(index){
                                                                                                               $(this).prev().removeClass(MISSING);
                                                                                                               });
-                                                                                             
+
                                                                                              // Perform form validation
                                                                                              inputMapVar.each(function(index){
                                                                                                               if($(this).val()==null || $(this).val()==EMPTY){
@@ -247,14 +244,14 @@
                                                                                              //whatLabelVar.addClass(MISSING);
                                                                                              //err = true;
                                                                                              //}
-                                                                                             
+
                                                                                              // If validation fails, show Dialog content
                                                                                              if(err == true){
                                                                                              showContentDialog();
                                                                                              return false;
                                                                                              }
-                                                                                             
-                                                                                             
+
+
                                                                                              db.transaction(function(transaction) {
                                                                                                             // alert("test");
                                                                                                             transaction.executeSql('CREATE TABLE IF NOT EXISTS gwserial (id integer primary key, title text, desc text)', [],
@@ -264,23 +261,28 @@
                                                                                                                                    function(error) {
                                                                                                                                    //  alert("Error occurred while creating the table.");
                                                                                                                                    });
-                                                                                                            
+
                                                                                                             });
-                                                                                             
-                                                                                             
-                                                                                             
+
+
+
                                                                                              // Store to local value
-                                                                                             
+
                                                                                              localStorage.setItem("uname_r",uname_var.val());
                                                                                              localStorage.setItem("passwd_r",password_var.val());
                                                                                              localStorage.setItem("serverurl_r",serverurl.val());
                                                                                              localStorage.setItem("gatewayse",serial.val());
                                                                                              var desc = "Gateway_serial";
                                                                                              console.log(serial.val()+""+desc);
-                                                                                             var key = base32tohex(serial.val());
+																							var key;
+																							//alert(serial.val().length)
+																							 if(serial.val().length>=16){
+
+                                                                                             key = base32tohex(serial.val());
+																							 }else{ key = serial.val();}
                                                                                              // alert(key);
                                                                                              function insertsw(){
-                                                                                             
+
                                                                                              db.transaction(function(transaction) {
                                                                                                             var executeQuery = "INSERT INTO gwserial (title, desc) VALUES (?,?)";
                                                                                                             transaction.executeSql(executeQuery, [key,desc]
@@ -292,9 +294,9 @@
                                                                                                                                    });
                                                                                                             });
                                                                                              }
-                                                                                             
-                                                                                             
-                                                                                             
+
+
+
                                                                                              db.transaction(function(transaction) {
                                                                                                             var sql = "SELECT * FROM gwserial where title='"+key+"'";
                                                                                                             //  alert(sql);
@@ -307,22 +309,22 @@
                                                                                                                                    for (i = 0; i < len; i++){
                                                                                                                                    //  alert(  results.rows.item(i).title);
                                                                                                                                    //  alert(results.rows.item(i).desc);
-                                                                                                                                   
+
                                                                                                                                    }
                                                                                                                                    }, null);
-                                                                                                            
-                                                                                                            
-                                                                                                            
+
+
+
                                                                                                             });
-                                                                                             
-                                                                                             
-                                                                                             
+
+
+
                                                                                              //prePopulate(serial.val());
                                                                                              //Insert data to table
                                                                                              /*	 html5sql.process(
                                                                                               [
                                                                                               "INSERT INTO table  (data) VALUES ('"+serial.val()+"');"
-                                                                                              
+
                                                                                               ],
                                                                                               function(){
                                                                                               console.log("Success crea");
@@ -332,14 +334,14 @@
                                                                                               }
                                                                                               );
                                                                                               */
-                                                                                             
-                                                                                             
-                                                                                             
+
+
+
                                                                                              //Insert data to table
                                                                                              /*			 html5sql.process(
                                                                                               [
                                                                                               "SELECT * FROM table;"
-                                                                                              
+
                                                                                               ],
                                                                                               function(){
                                                                                               console.log("Success select");
@@ -348,7 +350,7 @@
                                                                                               console.error("Error: " + error.message + " when processing " + statement);
                                                                                               }
                                                                                               );
-                                                                                              
+
                                                                                               */
                                                                                              //document.getElementById("result").innerHTML = localStorage.getItem("serverurl_r");
                                                                                              // If validation passes, show Transition content
@@ -356,14 +358,14 @@
                                                                                              showContentTransition();
                                                                                              // Delay before redirect
                                                                                              var delay=2000; //1 seconds
-                                                                                             
+
                                                                                              setTimeout(function(){
                                                                                                         //your code to be executed after 1 seconds
                                                                                                         //redirect
                                                                                                         window.location="index.html";
                                                                                                         }, delay);
-                                                                                             
-                                                                                             
+
+
                                                                                              // Submit the form
                                                                                              $.post("/forms/requestProcessor.php", form1Var.serialize(), function(data){
                                                                                                     confirmationVar.text(data);
@@ -372,41 +374,41 @@
                                                                                                     });
                                                                                              return false;
                                                                                              });
-                                                                                             
+
                                                                                              function hideMain(){
                                                                                                  hdrMainVar.hide();
                                                                                                  contentMainVar.hide();
                                                                                                  ftrMainVar.hide();
                                                                                              }
-            
+
             function showMain(){
                 hdrMainVar.show();
                 contentMainVar.show();
                 ftrMainVar.show();
             }
-            
+
             function hideContentTransition(){
                 contentTransitionVar.hide();
             }
-            
+
             function showContentTransition(){
                 contentTransitionVar.show();
             }
-            
+
             function hideContentDialog(){
                 contentDialogVar.hide();
             }
-            
+
             function showContentDialog(){
                 contentDialogVar.show();
             }
-            
+
             function hideConfirmation(){
                 hdrConfirmationVar.hide();
                 contentConfirmationVar.hide();
                 ftrConfirmationVar.hide();
             }
-            
+
             function showConfirmation(){
                 hdrConfirmationVar.show();
                 contentConfirmationVar.show();
@@ -432,11 +434,11 @@
                                                     }
                                                     );
             }
-            
+
                 </script>
         </div> <!-- page1 -->
-        
-        
+
+
         <!-- Page ends here -->
     </body>
 </html>
