@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="assets/js/toast/toast.js"></script>
+<button class="btn btn-danger btn-lg" id="demo-4">Fixed Bottom</button>
+<script>
+
+$( "#demo-4" ).click(function() {
+	showtoast("Hello Nui");
+});
+
+function showtoast (text){
+	Toast.init();
+Toast({
+   text: text, 
+   time: 2000,
+   type: 'fixedBottom'
+}).show();
+	
+	}
+</script>
+</head>
+
+<body>
+
+</body>
+</html>

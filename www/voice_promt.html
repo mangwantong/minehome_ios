@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+
+<head>
+<meta charset="utf-8">
+
+<title>Voice Command</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/jquery.mobile-1.4.5.min.css">
+<link href="assets/css/stye_main.css" rel="stylesheet" type="text/css">
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+<script src="assets/js/minehome_custom.js"></script>
+<script src="assets/js/jquery.mobile-1.4.5.min.js"></script>
+
+
+</head>
+
+<script>
+
+var url = url_serv+"/json.htm?type=devices&filter=light&used=true&order=Name&os=iphone";
+var url_scenes =  url_serv+"/json.htm?type=scenes&os=iphone";
+//-->/json.htm?type=devices&filter=weather&used=true&order=Name
+var url_serv = localStorage.getItem("serverurl_r");
+var name_object ;
+var list_items_id;
+var autorefresh;
+var kkk='';
+var kknew='';
+var name_array =[];
+var url_for_send;
+var action_fetch;
+ var trigger_fetch;
+ var device_fetch ;
+ var url_ss;
+ var text_device;
+ var image = '<img class="size_icon" src="assets/css/images/icon/command.png">';
+ //** Call function for first load JSON **//
+
+$(function add(){
+
+
+
+	$('#cancel').click (function a() {
+	//var ff=	$("#un").val();
+  alert("close");
+	$( "#popbasic" ).popup("close");
+       // alert(ff);
+    });
+
+
+	$('#popsubmit').click (function() {
+
+	var name_rule =	$("#un").val();
+	var action_se = $("#action").val();
+	var triiger_se = $("#trigger").val();
+	var device_se1 = $("#Device").val();
+	var device_se_text = $("#Device option:selected").text();
+
+	var uurl ;
+	if ((triiger_se!="")&&((triiger_se!="select"))){
+		if(triiger_se=="Switch"){
+			uurl = "/json.htm?type=command&param=switchlight&idx="+ device_se1 + "&switchcmd="+action_se;
+			}
+		else if(triiger_se=="Scenes") {
+			uurl="/json.htm?type=command&param=switchscene&idx="+ device_se1 + "&switchcmd=On";
+			}
+
+		}
+
+	//alert(device_se1);
+	if((name_rule!="")&&(action_se!="select")&&(triiger_se!="select")&&(device_se1!="select")){
+	localStorage.setItem(name_rule, JSON.stringify([name_rule, action_se,triiger_se,device_se1,device_se_text,uurl]));
+	add();
+	$('#sw-list2').listview("refresh");
+	}
+
+
+	$( "#popbasic" ).popup("close");
+        //alert(name_rule);
+    });
+
+
+	  });
+
+
+
+
+</script>
+
+
+
+<body>
+<div data-role="popup" id="myPopup">
+
+</div>
+
+
+
+<div data-role="page" id="page1">
+    <div  data-role="header"style="height:70px">
+       <a href="index.html" class="ui-btn ui-icon-home ui-btn-icon-left" style="margin-top:20px">Home</a>
+       <br>
+       <h3>Voice CMD</h3> <a href="voice.html" id="refr" name="refr"
+       class="ui-btn ui-icon-plus ui-btn-icon-right" style="margin-top:20px" data-inline="true" data-ajax="false" data-transition="pop">Add CMD</a>
+
+    </div>
+
+    <div data-role="popup" id="popbasic" data-theme="a" class="ui-corner-all ui-popup ui-body-a ui-overlay-shadow">
+			<form action="#">
+				<div style="padding:10px 40px;">
+                    <br>
+				  <h3>Voice command</h3>
+		          <label for="un" class="ui-hidden-accessible">Create your command!:</label>
+		          <div class="ui-input-text ui-body-a ui-corner-all "><input type="text" name="user" id="un" value="" placeholder="Input your command" data-theme="a"></div>
+
+   
+    <select name="action" id="action" data-mini="true">
+		<option value="select">Please select Action</option>
+        <option value="On">On</option>
+        <option value="Off">Off</option>
+        
+    </select>
+
+    <select name="trigger" id="trigger" data-mini="true">
+        <option value="select">Please select Trigger</option>
+		<option value="Scenes">Scenes</option>
+        <option value="Switch">Switch</option>
+        
+    </select>
+
+
+    <select name="Device" id="Device" data-mini="true">
+      <option value="select">Please select Device</option>  
+        
+    </select>
+
+
+ 					<button  id="cancel"type="button" data-theme="a"  class=" ui-btn ui-btn-a  ui-corner-all ui-btn-inline ui-mini">Cancel</button>
+		    	  <button id="popsubmit"type="button" data-theme="a" class=" ui-btn ui-btn-a  ui-corner-all ui-btn-inline ui-mini">Submit</button>
+				</div>
+			</form>
+		</div>
+    <div role="main" class="ui-content">
+
+
+        <!--<div class="example-wrapper" data-iscroll>-->
+            <ul data-role="listview"  id="sw-list2"  >
+
+            </ul>
+
+          <img class="mic"  src="assets/css/images/icon/Siri_icon.svg_.png">
+           <label class="textcenter" >Tap on mic to speak </label>
+        <!--</div>-->
+    </div>
+
+
+</div>
+
+
+
+</body>
+</html>

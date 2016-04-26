@@ -1,0 +1,280 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Switchs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- / End include-->
+<!--<iframe src="otp_bk.html"></iframe>-->
+<!-- <iframe src="check_logintype.html"></iframe>-->
+<title>Switchs</title>
+
+<link rel="stylesheet" href="assets/css/jquery.mobile-1.4.5.min.css">
+<link href="assets/css/stye_main.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="farbtastic.css" type="text/css" />
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+<script src="assets/js/jquery.mobile-1.4.5.min.js"></script>
+<script src="assets/js/minehome_custom.js"></script>
+
+</head>
+<script>
+var username = localStorage.getItem("uname_r");
+var serialnumber = localStorage.getItem("gatewayse");
+var url_serv = localStorage.getItem("serverurl_r");
+var url = url_serv+"/json.htm?type=devices&filter=light&used=true&order=Name&os=iphone";
+//var url = "http://localhost/html5up-aerial/aaa.html";
+var name_object ;
+var list_items_id;
+var array_object = [];
+var autorefresh;
+var kkk='';
+var kknew='';
+
+
+ $(getlogintype);
+function json_fetch(data){
+		//<==wipe array
+	//	start_get(data);
+			array_object = [];
+			var i=0;
+    $.each(data.result, function(i, results) {
+		var idx_update;
+
+
+		var search_icon = '<button class="ui-search ui-btn-inline ui-mini ui-shadow">Color</button>';
+    var image;
+		//alert (image);
+		var idx = data.result[i].idx;
+		var Status = data.result[i].Status;
+    if(Status=="Off"){
+        image = data.result[i].Image+"_off.png";
+    }else{image = data.result[i].Image+".png";}
+
+		var lastseen = data.result[i].LastUpdate;
+		var color;
+		var SubType = data.result[i].SubType;
+		if ((image=="undefined")||(SubType=="Security Panel")){image="ARM.png";}
+
+		var level = data.result[i].Level;
+		var sw_re;
+
+		var toggle;
+		var swType=data.result[i].SwitchType;
+		var icond= '<img class="size_icon" src="assets/css/images/icon/'+ image+'">';
+		var slider = '<div id="div-slider"><input type="range" class="margin_slider" name='+idx+' id=slider'+idx+' value='+level+' min="0" max="100" data-highlight="true" data-mini="true" /></div>';
+
+
+
+                  var ARM_button =     '<div class="two_bt_rigth" ><button id="arm" name="arm" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth" data-rel="popup" data-transition="pop">ARM</button></div>';
+    //var ARM_button = '<a href="#popbasic" id=arm'+idx+' name=arm'+idx+'class="ui-btn ui-mini"  data-rel="popup"  data-inline="true" data-transition="pop">ARM</a>';
+
+		// <==** Array push value **==>//
+			array_object.push({'object_name':data.result[i].Name, 'id':idx});
+
+
+			//var toggle ='<div class="two_bt_rigth" ><button style="background:yellow" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">ON</button> <button class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';
+			//<==** ON & OFF button **==>//
+		if ((Status=="On")||(Status=="Opened")){toggle ='<div class="two_bt_rigth" ><button id='+idx+' name="On" style="background:green ;color:white" class="ui-btn ui-btn-inline ui-mini ">ON</button> <button id='+idx+' name="Off" style="background:gray; color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';}
+		else if((Status=="Off")||(Status=="Closed")){toggle ='<div class="two_bt_rigth" ><button id='+idx+' name="On" style="background:gray ;color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">ON</button> <button id='+idx+' name="Off" style="background:green ;color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';}else{toggle="";}
+
+		//var toggle = '<div class="containing-element ui-btn-icon-rigth"><select name="flip-1" id="flip-1" data-role="flipswitch data-mini="true""><option value="Off">Off</option><option value="On">On</option></select></div>';
+
+		//<=** Show object slider & Switch **=>//
+		if ((swType=="On/Off")||(swType=="Motion Sensor")){sw_re=toggle;}
+			else if (swType=="Dimmer"){sw_re=slider+toggle;}
+			else if(swType=="Security"){sw_re=ARM_button;}
+			else if(swType=="Door Lock"){sw_re=toggle;}
+			else{sw_re="";}
+		if (SubType!="RGBW"){
+			color="";
+			}else {
+				//color = '<button class="ui-btn ui-btn-inline ui-mini ui-shadow">Color</button>';
+color ='<div><button id=Color'+idx+' name="Color" class="ui-btn ui-btn-inline ui-mini ui-shadow">Color</button><button id=Color_hide'+idx+' name="Color_hide" class="ui-btn ui-btn-inline ui-mini ui-shadow" style="background:green ;color:white; display:none">OK</button></div><div id="picker'+idx+'"></div>';
+			}
+     		//<==** Add li tag to Ul **==>//
+			// >> Remove li eliment before append ///
+
+			      $('ul').find('#'+idx).remove();
+            $('#sw-list').append('<li name="'+i+ '"id='+idx+'>'+icond+data.result[i].Name +sw_re+' <p>' + '<p>Status:'+ Status +  '</p><br><p> Last seen:'+lastseen+'</p>'+color+'</p> </li>');
+
+        $('#sw-list').listview("refresh");
+	 $('#slider').slider();
+	//	$('input').slider();
+
+
+
+    });
+
+
+} //End function json_fetch
+$(function Listener(){
+//refresh button
+$('#arm').click(function a(){
+  $( "#popbasic" ).popup( "open" );
+});
+$('#cancel').click(function a(){
+  $( "#popbasic" ).popup( "close" );
+});
+$('#popsubmit').click(function a(){
+  $( "[type=radio]" );
+//alert($('input[name=arm]:checked').val());
+var shoice = $('input[name=arm]:checked').val();
+var seccode = $('#seccode').val();
+var secode_md5 = $.md5(seccode);
+url_update= url_serv_se+"/json.htm?type=command&param=setsecstatus&secstatus="+shoice+"&seccode="+secode_md5;
+//toast("Arm updated");
+sent_to_server(url_update);
+$( "#popbasic" ).popup( "close" );
+/*switch (shoice) {
+  case "1":
+    toast("Arm will update in waiting time");
+    break;
+
+  default:
+    toast("Arm updated");
+}*/
+
+});
+  $('#refr').click(function a(){
+       $(autoUpdate);
+    });
+
+// listview listener
+		$('#sw-list').on('vclick', '.ui-btn', function(event,ui) {
+                           event.preventDefault();
+     var hl;
+     var hh;
+   var url_update;
+   var name_icon = this.name;
+   //alert(name_icon);
+   idx_update = this.id.substring(5);
+   //idx_update = this.id;
+   //alert(idx_update);
+   //<==** Get position id index when we click item on listview **==>
+   list_items_id = $(this).closest("li").index();
+   //==END==//
+   name_object = array_object[list_items_id].object_name;
+   // <== Color button ==>//
+   if(name_icon=="Color"){
+     $('#picker'+idx_update).show(10);
+     $('#Color_hide'+idx_update).show(500);
+   //<==** Color select** ==>//
+    $('#picker'+idx_update).farbtastic(function(e){
+       var c   = hexToRgb(e)
+         , h   = rgbToHsl(c.r,c.g,c.b)
+          , r   = hslToRgb(h.h,h.s,h.l)
+           , rgb = 'rgb('+r.r+','+r.g+','+r.b+')' ;
+
+     // == END ==//
+
+      hl= h.l;
+      hh = h.h;
+      // Update color on background button //
+         // $('#Color'+idx_update).css({backgroundColor:e}).val(e);
+
+});
+     }else if (name_icon =="Color_hide"){
+     var brihtne;
+     var iswhite=false;
+     var idx_res = this.id.substring(10);
+     //<== Brightness value ==>//
+
+     brihtne = Math.floor(hl);
+     var hue=Math.floor(hh);
+     //alert(hue);
+     if((brihtne<=100)&&(brihtne>=96)||(brihtne=='')){iswhite=true;}
+     //alert(intvalue);
+     $('#picker'+idx_res).hide();
+     $('#Color_hide'+idx_res).hide();
+     url_update=url_serv+"/json.htm?type=command&param=setcolbrightnessvalue&idx=" + idx_res + "&hue=" + hue + "&brightness=" + brihtne + "&iswhite="+iswhite;
+     toast("Switch Color has been change");
+     sent_to_server(url_update);
+
+     //On and Off button
+      }else if ((name_icon=="On")||(name_icon=="Off")){
+         //<==* update **==>//
+         //alert(this.id);
+   url_update = url_serv+"/json.htm?type=command&param=switchlight&idx="+ this.id + "&switchcmd="+name_icon;
+   toast("Switch :"+name_object+" : "+name_icon);
+   sent_to_server(url_update);
+
+
+ }else if (name_icon=="arm"){
+   // <=call function dialog => //
+      $( "#popbasic" ).popup( "open" );
+   }
+
+ //alert() // id of clicked li by directly accessing DOMElement property
+  });
+
+
+  	$( '#sw-list' ).on( 'slidestop', '.ui-slider-input' ,function( event ,ui ) {
+
+          idx_update = this.name;
+  		var slider_id = this.id;
+
+  		//name_object = data.result[i].Name;
+  		var val= $('#slider'+idx_update).val();
+  		//<==** Get position id index when we click item on listview **==>
+  			list_items_id = $(this).closest("li").index();
+  			//==END==//
+
+  			//alert(list_items_id);
+  			name_object = array_object[list_items_id].object_name;
+
+  		url_update = url_serv+"/json.htm?type=command&param=switchlight&idx=" + idx_update + "&switchcmd=Set%20Level&level=" + val;
+  		toast("Set level :"+name_object+" : "+val);
+  		sent_to_server(url_update);
+
+      });
+
+}); //End function Listener
+
+
+</script>
+
+<body>
+<div data-role="popup" id="myPopup"> </div>
+<div data-role="page" id="page1">
+    <div  data-role="header" data-position="fixed" style="height:70px">
+        <a href="index.html" data-transition="none" class="ui-btn ui-icon-home ui-btn-icon-left" style="margin-top:20px">Home</a>
+        <br>
+        <h3>Switch</h3>
+        <a id="refr" href="#"
+            class="ui-btn ui-icon-refresh ui-btn-icon-right" style="margin-top:20px">Refresh</a>
+    </div>
+    <div data-role="popup" id="popbasic" data-theme="a" class="ui-corner-all ui-popup ui-body-a ui-overlay-shadow">
+      <form action="#">
+        <div style="padding:10px 40px;">
+
+          <h3>Security Panel</h3>
+
+              <div>
+              <input type="password" name="user" id="seccode" value="" placeholder="Security Code" data-theme="a"></div>
+              <fieldset data-role="controlgroup" data-mini="true">
+                  	<input type="radio" name="arm" id="radio-mini-1" value="0" />
+                  	<label for="radio-mini-1">Disarm</label>
+
+              	<input type="radio" name="arm" id="radio-mini-2" value="1"  />
+                  	<label for="radio-mini-2">Arm Home</label>
+
+                  	<input type="radio" name="arm" id="radio-mini-3" value="2"  />
+                  	<label for="radio-mini-3">Arm Away</label>
+              </fieldset>
+
+
+              <button  id="cancel"type="button" data-theme="a"  class=" ui-btn ui-btn-a  ui-corner-all ui-btn-inline ui-mini">Cancel</button>
+            <button id="popsubmit"type="button" data-theme="a" class=" ui-btn ui-btn-a  ui-corner-all ui-btn-inline ui-mini">Set</button>
+        </div>
+      </form>
+    </div>
+  <div role="main" class="ui-content">
+    <!--<div class="example-wrapper" data-iscroll>-->
+    <ul data-role="listview"  id="sw-list"  >
+    </ul>
+    <!--</div>-->
+  </div>
+
+</div>
+</body>
+</html>

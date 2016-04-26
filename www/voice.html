@@ -1,0 +1,303 @@
+<!doctype html>
+<html>
+
+<head>
+<meta charset="utf-8">
+
+<title>Voice Command</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/jquery.mobile-1.4.5.min.css">
+<link href="assets/css/stye_main.css" rel="stylesheet" type="text/css">
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+<script src="assets/js/minehome_custom.js"></script>
+<script src="assets/js/jquery.mobile-1.4.5.min.js"></script>
+
+
+</head>
+
+<script>
+
+var url = url_serv_se+"/json.htm?type=devices&filter=light&used=true&order=Name&os=iphone";
+var url_scenes =  url_serv_se+"/json.htm?type=scenes&os=iphone";
+//-->/json.htm?type=devices&filter=weather&used=true&order=Name
+var url_serv = localStorage.getItem("serverurl_r");
+var name_object ;
+var list_items_id;
+var autorefresh;
+var kkk='';
+var kknew='';
+var name_array =[];
+var url_for_send;
+var action_fetch;
+ var trigger_fetch;
+ var device_fetch ;
+ var url_ss;
+ var text_device;
+ var image = '<img class="size_icon" src="assets/css/images/icon/command.png">';
+ //** Call function for first load JSON **//
+// $(autoUpdate2);
+ $(getlogintype);
+ function Scenes_trigger(){
+ ///For button refresh ///
+
+    $.ajax({
+      dataType:"jsonp",
+      url: url_scenes+"&rhtpasswd="+grobal_token,
+	jsonpCallback:"jsonp123"
+          });
+     }
+
+$(function add(){
+  // Retrieve the object from storage
+  var retrievedObject = localStorage.getItem('testObject');
+
+  console.log('retrievedObject: ', JSON.parse(retrievedObject));
+//	localStorage.clear();
+	//alert(localStorage.length);
+//for (var m = 0; m < localStorage.length; m++){
+  //localStorage[i];
+ //var nameof_array= localStorage.key(m);
+ //alert(nameof_array);
+ //var f = localStorage.key(m);alert(f);
+ //alert(localStorage.getItem(nameof_array));
+ //if(f){
+//alert(f);
+
+
+    	//var name_fetch = JSON.parse(localStorage.getItem(nameof_array))[0];
+//	var action_fetchs = JSON.parse(localStorage.getItem(nameof_array))[1];
+//	alert(action_fetchs);
+//	trigger_fetch = JSON.parse(localStorage.getItem(nameof_array))[2];
+//	device_fetch = JSON.parse(localStorage.getItem(nameof_array))[3];
+//	text_device = JSON.parse(localStorage.getItem(nameof_array))[4];
+//	url_ss = JSON.parse(localStorage.getItem(nameof_array))[5];
+	//alert(url_ss);
+
+ // console.log(nameof_array);
+ // console.log(action_fetchs);
+  // console.log(trigger_fetch);
+   // console.log(device_fetch);
+//	console.log(url_ss);
+//$('#'+m).remove();
+//	$('#sw-list2').append('<li name="'+m+ '"id='+m+'><img class="size_icon" src="assets/css/images/icon/command.png"> Command :: <div class="command" id=nn'+m+'>'+nameof_array + '</div><p>Action :'+ action_fetchs+'</p> <p>Trigger :'+trigger_fetch+'</p><p>Device :'+text_device+'</p> <div><button id='+m+' name="'+nameof_array+'"  class="ui-btn ui-btn-inline ui-mini ui-shadow">Delete</button></div></li>');
+
+//	$('#sw-list2').listview("refresh");
+
+//  }
+
+//}
+
+});
+
+
+$(function Listener(){
+
+  $('#cancel').click(function a(){
+  $( "#popbasic" ).popup("close");
+
+  $('#popsubmit').click (function a() {
+ alert("test");
+  var name_rule =	$("#un").val();
+  var action_se = $("#action").val();
+  var triiger_se = $("#trigger").val();
+  var device_se1 = $("#Device").val();
+  var device_se_text = $("#Device option:selected").text();
+
+  var uurl ;
+  if ((triiger_se!="")&&((triiger_se!="select"))){
+    if(triiger_se=="Switch"){
+      uurl = "/json.htm?type=command&param=switchlight&idx="+ device_se1 + "&switchcmd="+action_se;
+      }
+    else if(triiger_se=="Scenes") {
+      uurl="/json.htm?type=command&param=switchscene&idx="+ device_se1 + "&switchcmd=On";
+      }
+
+    }
+
+  alert(name_rule);
+  if((name_rule!="")&&(action_se!="select")&&(triiger_se!="select")&&(device_se1!="select")&&(!name_rule)){
+//  localStorage.setItem(name_rule, JSON.stringify([name_rule, action_se,triiger_se,device_se1,device_se_text,uurl]));
+var testObject = { 'one': 1, 'two': 2, 'three': 3 };
+// Put the object into storage
+localStorage.setItem('testObject', JSON.stringify(testObject));
+ add();
+  $('#sw-list2').listview("refresh");
+  }
+
+
+  $( "#popbasic" ).popup("close");
+        //alert(name_rule);
+    });
+
+    $('#refr').click(function a(){
+
+      });
+    });
+
+    $('#sw-list2').on('click', '.ui-btn', function(event,ui) {
+    		var name_icon = this.name;
+    		var idc= this.id;
+    		alert(idc);
+    		//var dn = $("#nn"+idc).val();
+    		//alert(name_icon);
+    		localStorage.removeItem(name_icon);
+    		$('#'+idc).remove();
+    		});
+
+  });
+
+
+	//$('#cancel').click (function() {
+	//var ff=	$("#un").val();
+//	$( "#popbasic" ).popup("close");
+       // alert(ff);
+  //  });
+
+
+
+	function json_fetch(data){
+
+			array_object = [];
+
+    $.each(data.result, function(i, results) {
+		var idx_update;
+		var option = document.createElement("option");
+		var image = data.result[i].TypeImg+".png";
+		var search_icon = '<button class="ui-search ui-btn-inline ui-mini ui-shadow">Color</button>';
+
+		//alert (image);
+		var idx = data.result[i].idx;
+		var Status = data.result[i].Status;
+		var datas = data.result[i].Data;
+		var Hardware = data.result[i].HardwareName;
+		var lastseen = data.result[i].LastUpdate;
+		var color;
+		var SubType = data.result[i].SubType;
+		var air_mode_int = data.result[i].Mode;
+		//alert(air_mode_int);
+		if ((image=="undefined")||(SubType=="Security Panel")){image="ARM";}
+
+		var level = data.result[i].Level;
+		var sw_re;
+		var data_name;
+		var toggle;
+		var swType=data.result[i].Type;
+		var icond= '<img class="size_icon" src="assets/css/images/icon/'+ image+'">';
+		var slider = '<div id="div-slider"><input type="range" class="margin_slider " name='+idx+' id=slider'+idx+' value='+level+' min="0" max="100" data-highlight="true" data-mini="true" /></div>';
+		var ARM_button = '<div class="two_bt_rigth" ><button id=arm'+idx+' name="arm"  class="ui-btn ui-btn-inline ui-mini ui-shadow">ARM</button></div>';
+		var exe_button = '<div class="config" ><button id='+idx+' name="exe"  class="ui-btn ui-btn-inline ui-mini ui-shadow">...</button></div>';
+	//var termo_pop = '<div id="slider" data-mini="true" min="0" max="100" value="50" type="range" data-highlight="true"></div>';
+		var termo_pop = '<p>Set Temperature</p><div id ="aircon" class="air_right"><button id='+idx+' name="Del"  class="ui-btn ui-btn-inline ui-mini ">-</button><input type="number" name=air'+idx+' id=air'+idx+' value='+datas+' class="air_input" min ="17" max="30" /><button id='+idx+' name="Add" class="ui-btn ui-btn-inline ui-mini ">+</button></div>';
+
+		var air_mode = '<p>Set Mode</p><div class="ui-field-contain"> <select name='+idx+' id=mode'+idx+' data-mini="true"  data-native-menu="false"><option value="0">Off</option><option value="1">Heat</option><option value="2">Cool</option><option value="5">Resume</option><option value="6">Fan Only</option><option value="8">Dry Air</option><option value="10">Auto Changeover</option></select></div>';
+		// <==** Array push value **==>//
+			array_object.push({'object_name':data.result[i].Name, 'id':idx});
+
+
+			//var toggle ='<div class="two_bt_rigth" ><button style="background:yellow" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">ON</button> <button class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';
+			//<==** ON & OFF button **==>//
+		if ((Status=="On")||(Status=="Opened")){toggle ='<div class="two_bt_rigth" ><button id='+idx+' name="On" style="background:green ;color:white" class="ui-btn ui-btn-inline ui-mini ">ON</button> <button id='+idx+' name="Off" style="background:gray; color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';}
+		else if((Status=="Off")||(Status=="Closed")||(Status=="Mixed")){toggle ='<div class="two_bt_rigth" ><button id='+idx+' name="On" style="background:gray ;color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">ON</button> <button id='+idx+' name="Off" style="background:green ;color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';}else{toggle="";}
+
+		//var toggle = '<div class="containing-element ui-btn-icon-rigth"><select name="flip-1" id="flip-1" data-role="flipswitch data-mini="true""><option value="Off">Off</option><option value="On">On</option></select></div>';
+
+     $('#Device')
+
+         .append($("<option></option>")
+         .attr("value",idx)
+         .text(data.result[i].Name));
+
+		 $('#slider').slider();
+		 $('select').selectmenu();
+		// alert(air_mode_int);
+});
+
+
+
+	$('#trigger').change(function() {
+    var name_tigger = $(this).val();
+	//alert(name_tigger);
+	if (name_tigger=="Scenes"){
+		$('#Device').html('');
+		Scenes_trigger();
+		}else{$('#Device').html('');
+		autoUpdate2();}
+	//alert(selectedwww);// or this.value
+});
+
+}
+</script>
+
+
+
+
+
+<body>
+<div data-role="popup" id="myPopup">
+
+
+
+<div data-role="page" id="page1">
+    <div  data-role="header" style="height:70px">
+       <a href="voice_promt.html" class="ui-btn ui-icon-back ui-btn-icon-left" style="margin-top:20px">Back</a>
+       <br>
+       <h3>Voice CMD</h3>
+       <a href="#popbasic" id="refr" name="refr"
+       class="ui-btn ui-icon-plus ui-btn-icon-right" style="margin-top:20px" data-rel="popup"  data-inline="true" data-transition="pop">Add</a>
+
+    </div>
+
+    <div data-role="popup" id="popbasic" data-theme="a" class="ui-corner-all ui-popup ui-body-a ui-overlay-shadow">
+			<form action="#">
+				<div style="padding:10px 40px;">
+
+				  <h3>Voice command</h3>
+		          <label for="un" class="ui-hidden-accessible">Create your command!:</label>
+		          <div class="ui-input-text ui-body-a ui-corner-all "><input type="text" name="user" id="un" value="" placeholder="Input your command" data-theme="a"></div>
+
+   
+    <select name="action" id="action" data-mini="true">
+		<option value="select">Please select Action</option>
+        <option value="On">On</option>
+        <option value="Off">Off</option>
+        
+    </select>
+
+    <select name="trigger" id="trigger" data-mini="true">
+        <option value="select">Please select Trigger</option>
+		<option value="Scenes">Scenes</option>
+        <option value="Switch">Switch</option>
+        
+    </select>
+
+
+    <select name="Device" id="Device" data-mini="true">
+      <option value="select">Please select Device</option>  
+        
+    </select>
+
+
+ 					<button  id="cancel"type="button" data-theme="a"  class=" ui-btn ui-btn-a  ui-corner-all ui-btn-inline ui-mini">Cancel</button>
+		    	  <button id="popsubmit"type="button" data-theme="a" class=" ui-btn ui-btn-a  ui-corner-all ui-btn-inline ui-mini">Submit</button>
+				</div>
+			</form>
+		</div>
+    <div role="main" class="ui-content">
+
+
+        <!--<div class="example-wrapper" data-iscroll>-->
+            <ul data-role="listview"  id="sw-list2"  >
+
+            </ul>
+        <!--</div>-->
+    </div>
+   
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!doctype html>
+<html>
+
+<head>
+<meta charset="utf-8">
+
+<title>Weather</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+<link rel="stylesheet" href="assets/css/jquery.mobile-1.4.5.min.css">
+<link href="assets/css/stye_main.css" rel="stylesheet" type="text/css">
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+<script src="assets/js/minehome_custom.js"></script>
+<script src="assets/js/jquery.mobile-1.4.5.min.js"></script>
+
+</head>
+
+<script>
+
+var url = url_serv_se+"/json.htm?type=devices&filter=weather&used=true&order=Name&os=iphone";
+//-->/json.htm?type=devices&filter=weather&used=true&order=Name
+//var url_serv = "http://10.10.17.58:8080";
+var name_object ;
+var list_items_id;
+var autorefresh;
+var kkk='';
+var kknew='';
+ $(getlogintype);
+
+
+	function json_fetch(data){
+
+			array_object = [];
+
+    $.each(data.result, function(i, results) {
+		var idx_update;
+
+		var image = data.result[i].TypeImg+".png";
+		var search_icon = '<button class="ui-search ui-btn-inline ui-mini ui-shadow">Color</button>';
+
+		//alert (image);
+		var idx = data.result[i].idx;
+		var Status = data.result[i].Status;
+		var datas = data.result[i].Data;
+		var Hardware = data.result[i].HardwareName;
+		var lastseen = data.result[i].LastUpdate;
+		var color;
+		var SubType = data.result[i].SubType;
+		var air_mode_int = data.result[i].Mode;
+		//alert(air_mode_int);
+		if ((image=="undefined")||(SubType=="Security Panel")){image="ARM";}
+
+		var level = data.result[i].Level;
+		var sw_re;
+		var data_name;
+		var toggle;
+		var swType=data.result[i].Type;
+		var icond= '<img class="size_icon" src="assets/css/images/icon/'+ image+'">';
+		var slider = '<div id="div-slider"><input type="range" class="margin_slider " name='+idx+' id=slider'+idx+' value='+level+' min="0" max="100" data-highlight="true" data-mini="true" /></div>';
+		var ARM_button = '<div class="two_bt_rigth" ><button id=arm'+idx+' name="arm"  class="ui-btn ui-btn-inline ui-mini ui-shadow">ARM</button></div>';
+		var exe_button = '<div class="config" ><button id='+idx+' name="exe"  class="ui-btn ui-btn-inline ui-mini ui-shadow">...</button></div>';
+	//var termo_pop = '<div id="slider" data-mini="true" min="0" max="100" value="50" type="range" data-highlight="true"></div>';
+		var termo_pop = '<p>Set Temperature</p><div id ="aircon" class="air_right"><button id='+idx+' name="Del"  class="ui-btn ui-btn-inline ui-mini ">-</button><input type="number" name=air'+idx+' id=air'+idx+' value='+datas+' class="air_input" min ="17" max="30" /><button id='+idx+' name="Add" class="ui-btn ui-btn-inline ui-mini ">+</button></div>';
+
+		var air_mode = '<p>Set Mode</p><div class="ui-field-contain"> <select name='+idx+' id=mode'+idx+' data-mini="true"  data-native-menu="false"><option value="0">Off</option><option value="1">Heat</option><option value="2">Cool</option><option value="5">Resume</option><option value="6">Fan Only</option><option value="8">Dry Air</option><option value="10">Auto Changeover</option></select></div>';
+		// <==** Array push value **==>//
+			array_object.push({'object_name':data.result[i].Name, 'id':idx});
+
+
+			//var toggle ='<div class="two_bt_rigth" ><button style="background:yellow" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">ON</button> <button class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';
+			//<==** ON & OFF button **==>//
+		if ((Status=="On")||(Status=="Opened")){toggle ='<div class="two_bt_rigth" ><button id='+idx+' name="On" style="background:green ;color:white" class="ui-btn ui-btn-inline ui-mini ">ON</button> <button id='+idx+' name="Off" style="background:gray; color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';}
+		else if((Status=="Off")||(Status=="Closed")||(Status=="Mixed")){toggle ='<div class="two_bt_rigth" ><button id='+idx+' name="On" style="background:gray ;color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">ON</button> <button id='+idx+' name="Off" style="background:green ;color:white" class="ui-btn ui-btn-inline ui-mini ui-shadow ui-btn-icon-rigth">OFF</button></div>';}else{toggle="";}
+
+		//var toggle = '<div class="containing-element ui-btn-icon-rigth"><select name="flip-1" id="flip-1" data-role="flipswitch data-mini="true""><option value="Off">Off</option><option value="On">On</option></select></div>';
+
+		//<=** Show object slider & Switch **=>//
+		if ((swType=="On/Off")||(swType=="Motion Sensor")){sw_re=toggle;}
+			else if (swType=="Dimmer"){sw_re=slider+toggle;}
+			else if(swType=="Security"){sw_re=ARM_button; }
+			else if(swType=="Door Lock"){sw_re=toggle;}
+			else if(swType=="Group"){sw_re=toggle;}
+			else if(swType=="Scene"){sw_re=exe_button;}
+			else if(swType=="Thermostat"){sw_re=termo_pop;}
+			else if((swType=="General")&&(SubType=="Thermostat Mode")){sw_re=air_mode;}
+			else if(swType=="UV"){data_name="UVI";}
+			else{sw_re="";}
+
+		if (SubType!="RGBW"){
+			color="";
+			}else {
+				//color = '<button class="ui-btn ui-btn-inline ui-mini ui-shadow">Color</button>';
+color ='<div><button id=Color'+idx+' name="Color" class="ui-btn ui-btn-inline ui-mini ui-shadow">Color</button><button id=Color_hide'+idx+' name="Color_hide" class="ui-btn ui-btn-inline ui-mini ui-shadow" style="background:green ;color:white; display:none">OK</button></div><div id="picker'+idx+'"></div>';
+			}
+
+			//<==** Add li tag to Ul **==>//
+			// >> Remove li eliment before append ///
+		        $('ul').find('#'+idx).remove();
+            $('#sw-list').append('<li name="'+i+ '"id='+idx+'>'+icond+data.result[i].Name +sw_re+' <p>' + '<p>Hardware:'+ Hardware +  '</p><p>'+data_name+': '+ datas+'</p><br><p> Last seen:'+lastseen+'</p>'+color+'</p> </li>');
+
+
+		$('#sw-list').listview("refresh");
+		 $('#slider').slider();
+		 $('select').selectmenu();
+		// alert(air_mode_int);
+
+		///*** Set mode same as fetch from server **///
+		 $('#mode'+idx).val(Math.floor(air_mode_int)).selectmenu('refresh');
+
+		// $('select').selectmenu('refresh');
+
+		//var slider  = $('#slider');
+
+    });  //$('#sw-list').listview("refresh");
+
+
+
+}//End function json_fetch
+$(function Listener(){
+//refresh button
+  $('#refr').click(function a(){
+       $(autoUpdate);
+    });
+
+    //<==** Listener button ON && OFF click **==>//
+  		$('#sw-list').on('vclick', '.ui-btn', function(event,ui) {
+                         event.preventDefault();
+  				var hl;
+
+  		var hh;
+  			var url_update;
+  			var name_icon = this.name;
+  			//alert(name_icon);
+  			idx_update = this.id.substring(5);
+  			//alert(this.id);
+  			idx_update_scenes = this.id;
+  			var input_air=$('#air'+idx_update_scenes).val();
+  			//alert(input_air);
+  			//alert(idx_update);
+  			//<==** Get position id index when we click item on listview **==>
+  			list_items_id = $(this).closest("li").index();
+  			//==END==//
+  			name_object = array_object[list_items_id].object_name;
+  			// <== Color button ==>//
+  			if(name_icon=="Color"){
+  				$('#picker'+idx_update).show(10);
+  				$('#Color_hide'+idx_update).show(500);
+  			//<==** Color select** ==>//
+  			 $('#picker'+idx_update).farbtastic(function(e){
+      			var c   = hexToRgb(e)
+        			, h   = rgbToHsl(c.r,c.g,c.b)
+       			 , r   = hslToRgb(h.h,h.s,h.l)
+        				, rgb = 'rgb('+r.r+','+r.g+','+r.b+')' ;
+
+   			// == END ==//
+
+  				 hl= h.l;
+  				 hh = h.h;
+  				 // Update color on background button //
+     				// $('#Color'+idx_update).css({backgroundColor:e}).val(e);
+
+    });
+  				}else if (name_icon =="Color_hide"){
+  				var brihtne;
+  				var iswhite=false;
+  				var idx_res = this.id.substring(10);
+  				//<== Brightness value ==>//
+
+  				brihtne = Math.floor(hl);
+  				var hue=Math.floor(hh);
+  				//alert(hue);
+  				if((brihtne<=100)&&(brihtne>=96)||(brihtne=='')){iswhite=true;}
+  				//alert(intvalue);
+  				$('#picker'+idx_res).hide();
+  				$('#Color_hide'+idx_res).hide();
+  				url_update="/json.htm?type=command&param=setcolbrightnessvalue&idx=" + idx_res + "&hue=" + hue + "&brightness=" + brihtne + "&iswhite="+iswhite;
+  				$.ajax({
+   				 url: url_update,
+    					dataType: 'json',
+    					success: function(){toast("Switch Color has been change");}
+
+  			});
+  				//On and Off button
+  				 }else if ((name_icon=="On")||(name_icon=="Off")){
+  						//<==* update **==>//
+  						//alert(idx_update_onoff);
+  						//json.htm?type=command&param=switchscene&idx="+indx +"&switchcmd=On
+  			url_update = "/json.htm?type=command&param=switchscene&idx="+ idx_update_scenes + "&switchcmd="+name_icon;
+        toast("Scenes :"+name_object+" : "+name_icon);
+        sent_to_server(url_update);
+
+  		}else if (name_icon=="exe"){
+  			opendialog_arm();
+
+
+  			}else if((name_icon=="Del")||(name_icon=="Add")){
+  				var ii;
+  				var limit=Math.floor(input_air);
+  				//alert(limit);
+  				if ((name_icon=="Add")&&(limit<=30)){//Limit 50 celcius
+  				 ii = Math.floor(input_air)+1;}
+  				 else if((name_icon=="Del")&&(limit>=17))
+  				 //Limit min at 0 celceius
+  				 {
+  					  ii = Math.floor(input_air)-1;
+
+  				}else{
+  					//alert("rr"+ii);
+  					ii=Math.floor(input_air);
+  					toast("The range number can between 17-30!!");}
+  				//==** Set value in text **==//
+  				$('#air'+idx_update_scenes).val(ii);
+
+  				//** Check for sure rang between 17-30 **//
+  				if ((ii>=17)&&(ii<=30)){
+  				url_update = "/json.htm?type=setused&idx=" + idx_update_scenes + "&description=&setpoint=" + ii + "&protected=false&used=true";
+  				//alert(url_update);
+          toast("Set :"+name_object+" : "+ii+"°C");
+          sent_to_server(url_update);
+
+  				}// end check
+  		}
+      });
+
+  	 $("select").change(function (event ,ui) {
+  		list_items_id = $(this).closest("li").index();
+  			//==END==//
+  			name_object = array_object[list_items_id].object_name;
+
+  		var textopt= $("select option:selected").text();
+  		// alert(name_object);
+  		var idxsss = this.name;
+  		//uri = "/json.htm?type=setused&idx=" + idx + "&name=AirCon_Mode&description=&tmode=" + status + "&protected=false&used=true";
+  		url_update = "/json.htm?type=setused&idx=" + idxsss + "&name=AirCon_Mode&description=&tmode=" + this.value + "&protected=false&used=true";
+  				//alert(url_update);
+          toast("Set :"+name_object+" : "+textopt);
+          sent_to_server(url_update);
+
+   //alert(this.value);
+
+
+  });
+
+  	$( '#sw-list' ).on( 'slidestop', '.ui-slider-input' ,function( event ,ui ) {
+
+          idx_update = this.name;
+  		var slider_id = this.id;
+
+  		//name_object = data.result[i].Name;
+  		var val= $('#slider').val();
+  		$('.tooltip').css('left', val).text(val);
+  		//alert(val);
+  		//<==** Get position id index when we click item on listview **==>
+  			list_items_id = $(this).closest("li").index();
+  			//==END==//
+
+  			//alert(list_items_id);
+  			name_object = array_object[list_items_id].object_name;
+
+  		url_update = "/json.htm?type=command&param=switchlight&idx=" + idx_update + "&switchcmd=Set%20Level&level=" + val;
+  			//alert(url_update);
+        toast("Set level :"+name_object+" : "+val);
+        sent_to_server(url_update);
+
+
+      });
+
+
+  });
+
+</script>
+
+
+
+<body>
+<div data-role="popup" id="myPopup">
+
+    </div>
+
+<div data-role="page" id="page1">
+
+    <div  data-role="header" data-position="fixed" style="height:70px">
+        <a href="index.html" data-transition="none" class="ui-btn ui-icon-home ui-btn-icon-left" style="margin-top:20px">Home</a>
+        <br>
+        <h3>Weather</h3>
+        <a id="refr" href="#"
+            class="ui-btn ui-icon-refresh ui-btn-icon-right" style="margin-top:20px">Refresh</a>
+    </div>
+
+
+
+    <div role="main" class="ui-content">
+        <!--<div class="example-wrapper" data-iscroll>-->
+            <ul data-role="listview"  id="sw-list"  >
+
+            </ul>
+        <!--</div>-->
+    </div>
+  
+</div>
+
+</body>
+</html>

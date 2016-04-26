@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>OTP</title>
+    
+<link rel="stylesheet" href="assets/css/jquery.mobile-1.4.5.min.css">
+<link href="assets/css/stye_main.css" rel="stylesheet" type="text/css">
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+<script src="assets/js/jquery.mobile-1.4.5.min.js"></script>
+<script src="assets/js/minehome_custom.js"></script>
+   <script type="text/javascript">
+  // set value form onload
+            window.onload = function() {
+               // get value from local storage
+               // document.getElementById("uname").value = localStorage.getItem("uname_r");
+				//document.getElementById("serverurl").value = localStorage.getItem("serverurl_r");
+				document.getElementById("secret").value = localStorage.getItem("gatewayse");
+            }
+        </script>
+    <script src="assets/js/sha.js"></script>
+
+
+  </head>
+  <body>
+  <div data-role="page" id="page1">
+
+      <div  data-role="header" data-position="fixed" style="height:70px">
+          <a href="index.html" data-transition="none" class="ui-btn ui-icon-home ui-btn-icon-left" style="margin-top:20px">Home</a>
+          <br>
+          <h3>OTP</h3>
+          <a id="refr" href="#"
+              class="ui-btn ui-icon-refresh ui-btn-icon-right" style="margin-top:20px">Refresh</a>
+      </div>
+
+
+
+
+ <div class="container-fluid">
+       <div>
+
+            <div class="row">
+<div data-role="content" id="contentMain" name="contentMain">
+                <form>
+                <fieldset>
+
+                   <!-- <div class="clearfix">
+                        <label for="secret">Secret (base32)</label>
+                        <div class="input"><input type="text" size="30" name="secret" id="secret" class="xlarge"  disabled /></div>
+                    </div>
+                    <!-- /clearfix -->
+
+                  <!--  <div class="clearfix">
+                        <label>Gateway Serial</label>
+                        <div class="input"><span class="label label-default" id="secretHex"></span>
+                           <span id='secretHexLength'></span>
+                           </div>
+                    </div> -->
+
+                    <!-- /clearfix -->
+                   <!-- <div class="clearfix">
+                        <label>QR Code</label>
+                        <div class="input"><img id="qrImg" src="" /></div>
+                    </div>-->
+                    <!-- /clearfix -->
+                   <!-- <div class="clearfix">
+                        <label>Unix epoch div 30 (padded hex)</label>
+                        <div class="input"><span class="label label-default" id='epoch'></span></div>
+                    </div>-->
+
+
+                    <!-- /clearfix -->
+                  <!--  <div class="clearfix">
+                        <label>HMAC(secret, time)</label>
+                        <div class="input" id='hmac'></div>
+                    </div>-->
+                  <!-- /clearfix -->
+                    <div class="clearfix">
+                       <p></p>
+                       <!--<p><label>One-time Password</label></p>-->
+                        <div class="input"><center><span class="otp" id='otp'></span></center></div>
+                    </div>
+                    <!-- /clearfix -->
+                 <!--   <div class="clearfix">
+
+                        <label>Updating in</label> <span id='updatingIn'></span>
+                    </div>-->
+                    <!-- /clearfix -->
+
+
+                </fieldset>
+
+
+
+                </form>
+
+                </div> <!-- End content main -->
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+      
+    function updateOtp() {
+
+        var key = base32tohex(localStorage.getItem("gatewayse"));
+        var epoch = Math.round(new Date().getTime() / 1000.0);
+        var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, '0');
+
+        // updated for jsSHA v2.0.0 - http://caligatio.github.io/jsSHA/
+        var shaObj = new jsSHA("SHA-1", "HEX");
+        shaObj.setHMACKey(key, "HEX");
+        shaObj.update(time);
+        var hmac = shaObj.getHMAC("HEX");
+
+        $('#qrImg').attr('src', 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/user@host.com%3Fsecret%3D' + $('#secret').val());
+        $('#secretHex').text(key);
+        $('#secretHexLength').text((key.length * 4) + ' bits');
+        $('#epoch').text(time);
+        $('#hmac').empty();
+
+        if (hmac == 'KEY MUST BE IN BYTE INCREMENTS') {
+            $('#hmac').append($('<span/>').addClass('label important').append(hmac));
+        } else {
+            var offset = hex2dec(hmac.substring(hmac.length - 1));
+            var part1 = hmac.substr(0, offset * 2);
+            var part2 = hmac.substr(offset * 2, 8);
+            var part3 = hmac.substr(offset * 2 + 8, hmac.length - offset);
+            if (part1.length > 0 ) $('#hmac').append($('<span/>').addClass('label label-default').append(part1));
+            $('#hmac').append($('<span/>').addClass('label label-primary').append(part2));
+            if (part3.length > 0) $('#hmac').append($('<span/>').addClass('label label-default').append(part3));
+        }
+
+        var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec('7fffffff')) + '';
+        otp = (otp).substr(otp.length - 6, 6);
+
+        $('#otp').text(otp);
+		//localStorage.setItem("otp",otp);
+    }
+
+function timer()
+{
+    var epoch = Math.round(new Date().getTime() / 1000.0);
+    var countDown = 30 - (epoch % 30);
+    if (epoch % 30 == 0) updateOtp();
+    $('#updatingIn').text(countDown);
+
+}
+
+    $(function () {
+        updateOtp();
+
+        $('#update').click(function (event) {
+            updateOtp();
+            event.preventDefault();
+        });
+
+        $('#secret').keyup(function () {
+            updateOtp();
+        });
+
+        setInterval(timer, 1000);
+    });
+	</script>
+    
+    </div>
+</body>
+</html>
