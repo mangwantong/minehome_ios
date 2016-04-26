@@ -1,0 +1,143 @@
+@charset "utf-8";
+.margin_togle {
+	margin-left: auto;
+	height: auto;
+	margin-right: 10%;
+	clear: both;
+	width: auto;
+}
+.otp {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 4em;
+	color: #FFF;
+	background-color: #00F;
+	text-align: center;
+}
+.margin_slider {
+	margin-left: 30%;
+	height: auto;
+	margin-right: 2%;
+}
+.size_icon {
+	height: 48px;
+	clear: none;
+	width: 48px;
+	margin-top: 20px;
+	margin-right: 0px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	float: right;
+}
+.size_icon_main {
+	height: 48px;
+	clear: none;
+	width: 48px;
+	float: none;
+	padding: 5px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: auto;
+	margin-left: 0px;
+}
+.size_thumb {
+	height: 150px;
+	width: 200px;
+	clear: both;
+	float: left;
+	margin-top: 10px;
+	margin-right: 20px;
+	margin-bottom: 10px;
+	margin-left: 0px;
+}
+.playnstop {
+	float: left;
+	margin-top: auto;
+	margin-bottom: 0px;
+	clear: both;
+}
+.two_bt_rigth {
+	float: right;
+	margin-right: 0px;
+	margin-top: 0px;
+	clear: both;
+	clip: rect(0px,auto,auto,auto);
+	height: auto;
+	width: 120px;
+	padding: 0px;
+	color: #FFF;
+	margin-left: 0px;
+}
+.arm_exe {
+	float: right;
+	margin-right: 0px;
+	margin-top: 0px;
+	clear: none;
+	clip: rect(0px,auto,auto,auto);
+	height: auto;
+	width: 120px;
+	padding: 0px;
+	color: #FFF;
+	margin-left: 0px;
+}
+.config {
+	width: 50px;
+	display: inline-block;
+	float: right;
+
+
+
+}
+.Logo {
+	clear: both;
+	float: none;
+	height: auto;
+	width: 100%;
+	margin: 0px;
+	text-align: center;
+}
+.ui_color_scense {
+	background-color: #FFFF99;
+}
+.sidecar {
+    position: absolute;
+
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background: #f00;
+}.air_input {
+	float: none;
+	height: auto;
+	width: 50px;
+	clear: none;
+
+}
+.air_right {
+	float: none;
+}
+.air_left {
+	float: right;
+	width: 20px;
+	margin-right: 70px;
+	display: inline;
+	clear: left;
+}
+.textcenter {
+	text-align: center;
+}
+.mic {
+	display: block;
+	height: 200px;
+	width: 200px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 50%;
+	margin-bottom: 30px;
+}
+.IosFront {
+	font-family: "Helvetica Neue";
+}
+.command {
+	display: inline;
+	font-size: 12px;
+}
